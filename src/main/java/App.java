@@ -1,7 +1,6 @@
 import org.openimaj.image.DisplayUtilities;
 import org.openimaj.image.FImage;
 import org.openimaj.image.ImageUtilities;
-import org.openimaj.image.MBFImage;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,13 +11,12 @@ import java.io.IOException;
 public class App {
 
     public static void main(String[] args){
-        FImage image = null;
+        ImageLoader imageLoader = new ImageLoader();
         try {
-            image = ImageUtilities.readF(new File("/Users/alex/Projects/University Notes/COMP6223 Computer Vision/CW3/training/Coast/0.jpg"));
+            imageLoader.loadImagesFromDir("/home/ar1v13/Projects/UniWork/SceneRecognition/training/bedroom");
         } catch (IOException e) {
             e.printStackTrace();
         }
-        DisplayUtilities.display(image);
     }
 
 }
