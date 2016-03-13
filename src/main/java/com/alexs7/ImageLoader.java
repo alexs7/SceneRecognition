@@ -1,3 +1,5 @@
+package com.alexs7;
+
 import org.apache.commons.io.FilenameUtils;
 import org.openimaj.image.FImage;
 import org.openimaj.image.ImageUtilities;

@@ -1,3 +1,5 @@
+package com.alexs7;
+
 import java.io.IOException;
 
 /**
