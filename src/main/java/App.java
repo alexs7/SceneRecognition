@@ -1,8 +1,3 @@
-import org.openimaj.image.DisplayUtilities;
-import org.openimaj.image.FImage;
-import org.openimaj.image.ImageUtilities;
-
-import java.io.File;
 import java.io.IOException;
 
 /**
@@ -10,13 +5,8 @@ import java.io.IOException;
  */
 public class App {
 
-    public static void main(String[] args){
-        ImageLoader imageLoader = new ImageLoader();
-        try {
-            imageLoader.loadImagesFromDir("/home/ar1v13/Projects/UniWork/SceneRecognition/training/bedroom");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public static void main(String[] args) throws IOException {
+
     }
 
 }
