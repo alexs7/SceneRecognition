@@ -1,34 +1,30 @@
 package com.alexs7;
 
-import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.vfs2.FileSystemException;
+import org.openimaj.data.dataset.VFSGroupDataset;
 import org.openimaj.image.FImage;
 import org.openimaj.image.ImageUtilities;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by ar1v13 on 09/03/16.
  */
 public class ImageLoader {
 
-    public ImageLoader() {}
+    String dir;
 
-    public List<FImage> loadImagesFromDir(String dirValue) throws IOException {
-        List<FImage> fImageList = new ArrayList<FImage>();
-        File dir = new File(dirValue);
-        File[] directoryListing = dir.listFiles();
+    public ImageLoader(String dir) {
+        this.dir = dir;
+    }
 
-        for (File file : directoryListing) {
-            String ext = FilenameUtils.getExtension(file.getName());
-            if(ext.equals("jpg")) {
-                FImage fImage = ImageUtilities.readF(file);
-                fImageList.add(fImage);
-            }
+    public VFSGroupDataset<FImage> run() {
+        VFSGroupDataset<FImage> images =
+                null;
+        try {
+            images = new VFSGroupDataset<FImage>(dir, ImageUtilities.FIMAGE_READER);
+        } catch (FileSystemException e) {
+            e.printStackTrace();
         }
 
-        return fImageList;
+        return images;
     }
 }
