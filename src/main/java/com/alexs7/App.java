@@ -14,11 +14,11 @@ import java.util.Map;
 public class App {
 
     public static void main(String[] args) throws IOException {
-        ImageLoader trainingImageLoader = new ImageLoader("/Users/alex/Projects/University Notes/COMP6223 Computer Vision/CW3/SceneRecognition/training/");
-        ImageLoader testingImageLoader = new ImageLoader("/Users/alex/Projects/University Notes/COMP6223 Computer Vision/CW3/SceneRecognition/training/");
+        ImageLoader trainingImageLoader = new ImageLoader("/home/ar1v13/Projects/UniWork/SceneRecognition/training");
+        ImageLoader testingImageLoader = new ImageLoader("/home/ar1v13/Projects/UniWork/SceneRecognition/testing");
 
         VFSGroupDataset<FImage> trainingImagesDataset = trainingImageLoader.getGroupDataSet();
-        VFSListDataset<FImage> testingImagesDataset = trainingImageLoader.getListDataSet();
+        VFSListDataset<FImage> testingImagesDataset = testingImageLoader.getListDataSet();
 
         KNNClassifier knnClassifier = new KNNClassifier(trainingImagesDataset,testingImagesDataset);
 
@@ -26,10 +26,10 @@ public class App {
         ResizeProcessor resizeProcessor = new ResizeProcessor(16,16);
         double[] imageFeatureVector;
         //for (FImage testingImage : testingImagesDataset) {
-            FImage testingImage = Utilities.squareImage(testingImagesDataset.get(19));
-            testingImage.processInplace(resizeProcessor); //or 'tiny image'
+            FImage tinyImage = Utilities.squareImage(testingImagesDataset.get(19));
+        tinyImage.processInplace(resizeProcessor); //or 'tiny image'
 
-            imageFeatureVector = Utilities.getFeaturesVector(testingImage);
+            imageFeatureVector = Utilities.getFeaturesVector(tinyImage);
             imageFeatureVector = Utilities.zeroMean(imageFeatureVector);
             imageFeatureVector = Utilities.unitLength(imageFeatureVector);
 
