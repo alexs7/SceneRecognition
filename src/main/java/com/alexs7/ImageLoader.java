@@ -3,8 +3,13 @@ package com.alexs7;
 import org.apache.commons.vfs2.FileSystemException;
 import org.openimaj.data.dataset.VFSGroupDataset;
 import org.openimaj.data.dataset.VFSListDataset;
+import org.openimaj.image.DisplayUtilities;
 import org.openimaj.image.FImage;
 import org.openimaj.image.ImageUtilities;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Created by ar1v13 on 09/03/16.
@@ -21,7 +26,7 @@ public class ImageLoader {
         VFSGroupDataset<FImage> images =
                 null;
         try {
-            images = new VFSGroupDataset<FImage>(dir, ImageUtilities.FIMAGE_READER);
+            images = new VFSGroupDataset<>(dir, ImageUtilities.FIMAGE_READER);
         } catch (FileSystemException e) {
             e.printStackTrace();
         }
@@ -29,13 +34,17 @@ public class ImageLoader {
         return images;
     }
 
-    public VFSListDataset<FImage> getListDataSet() {
-        VFSListDataset<FImage> images =
-                null;
-        try {
-            images = new VFSListDataset<FImage>(dir, ImageUtilities.FIMAGE_READER);
-        } catch (FileSystemException e) {
-            e.printStackTrace();
+    public TreeMap<String, FImage> getMapDataSet() {
+        Comparator<String> byImageFileName = (n1, n2) -> Integer.compare(Integer.parseInt(n1.split("\\.")[0]), Integer.parseInt(n2.split("\\.")[0]));
+        TreeMap<String, FImage> images = new TreeMap<>(byImageFileName);
+
+        final File file = new File(dir);
+        for(final File imageFile : file.listFiles()) {
+            try {
+                images.put(imageFile.getName(), ImageUtilities.readF(imageFile));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         return images;

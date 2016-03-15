@@ -13,11 +13,9 @@ import java.util.stream.Collectors;
 public class KNNClassifier {
 
     private VFSGroupDataset<FImage> trainingData;
-    private VFSListDataset<FImage> testingData;
     private ArrayList<String> categories;
 
-    public KNNClassifier(VFSGroupDataset<FImage> trainingImagesDataset, VFSListDataset<FImage> testingImagesDataset) {
-        setTestingData(testingImagesDataset);
+    public KNNClassifier(VFSGroupDataset<FImage> trainingImagesDataset) {
         setTrainingData(trainingImagesDataset);
         setCategories(trainingImagesDataset);
     }
@@ -26,20 +24,22 @@ public class KNNClassifier {
         this.trainingData = trainingData;
     }
 
-    public void setTestingData(VFSListDataset<FImage> testingData) {
-        this.testingData = testingData;
-    }
-
     public String classify(double[] testImageFeatureVector) {
         String category = null;
         double distance = 0;
         int k = (int) Math.ceil(Math.sqrt(testImageFeatureVector.length));
         ArrayList<Result> results = new ArrayList<>();
+        double[] trainingImageFeatureVector;
 
         for (Map.Entry<String, VFSListDataset<FImage>> trainingImageKeyValue : trainingData.entrySet()) {
             category = trainingImageKeyValue.getKey();
             for (FImage trainingImage : trainingImageKeyValue.getValue()){
-                distance = getDistance(testImageFeatureVector,trainingImage.getDoublePixelVector());
+
+                trainingImageFeatureVector = Utilities.getFeaturesVector(trainingImage);
+                trainingImageFeatureVector = Utilities.zeroMean(trainingImageFeatureVector);
+                trainingImageFeatureVector = Utilities.unitLength(trainingImageFeatureVector);
+
+                distance = getDistance(testImageFeatureVector,trainingImageFeatureVector);
                 results.add(new Result(category,distance));
             }
         }
@@ -50,7 +50,6 @@ public class KNNClassifier {
         category = getCategory(results,k);
 
         return category;
-
     }
 
     private String getCategory(ArrayList<Result> arrayList, int k) {

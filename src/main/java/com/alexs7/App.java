@@ -14,27 +14,14 @@ import java.util.Map;
 public class App {
 
     public static void main(String[] args) throws IOException {
-        ImageLoader trainingImageLoader = new ImageLoader("/home/ar1v13/Projects/UniWork/SceneRecognition/training");
-        ImageLoader testingImageLoader = new ImageLoader("/home/ar1v13/Projects/UniWork/SceneRecognition/testing");
+
+        ImageLoader trainingImageLoader = new ImageLoader("/Users/alex/Projects/University Notes/COMP6223 Computer Vision/CW3/SceneRecognition/training");
+        ImageLoader testingImageLoader = new ImageLoader("/Users/alex/Projects/University Notes/COMP6223 Computer Vision/CW3/SceneRecognition/testing");
 
         VFSGroupDataset<FImage> trainingImagesDataset = trainingImageLoader.getGroupDataSet();
-        VFSListDataset<FImage> testingImagesDataset = testingImageLoader.getListDataSet();
+        Map<String,FImage> testingImagesDataset = testingImageLoader.getMapDataSet();
 
-        KNNClassifier knnClassifier = new KNNClassifier(trainingImagesDataset,testingImagesDataset);
-
-        String category;
-        ResizeProcessor resizeProcessor = new ResizeProcessor(16,16);
-        double[] imageFeatureVector;
-        //for (FImage testingImage : testingImagesDataset) {
-            FImage tinyImage = Utilities.squareImage(testingImagesDataset.get(19));
-        tinyImage.processInplace(resizeProcessor); //or 'tiny image'
-
-            imageFeatureVector = Utilities.getFeaturesVector(tinyImage);
-            imageFeatureVector = Utilities.zeroMean(imageFeatureVector);
-            imageFeatureVector = Utilities.unitLength(imageFeatureVector);
-
-            category = knnClassifier.classify(imageFeatureVector);
-        //}
+        Runner.runKNNClassifier(trainingImagesDataset,testingImagesDataset);
 
     }
 
