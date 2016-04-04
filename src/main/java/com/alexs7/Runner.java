@@ -4,13 +4,14 @@ import org.openimaj.data.dataset.VFSGroupDataset;
 import org.openimaj.image.FImage;
 import org.openimaj.image.processing.resize.ResizeProcessor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Created by alex on 15/03/2016.
  */
 public class Runner {
-
 
     public static void runKNNClassifier(VFSGroupDataset<FImage> trainingImagesDataset, Map<String, FImage> testingImagesDataset) {
         KNNClassifier knnClassifier = new KNNClassifier(trainingImagesDataset);
@@ -32,5 +33,19 @@ public class Runner {
             imageName = testImageEntry.getKey();
             resultFileWriter.writeResultToFile(imageName,category);
         }
+    }
+
+    public static void runLinearClassifiers(VFSGroupDataset<FImage> trainingImagesDataset, Map<String, FImage> testingImagesDataset) {
+
+        double[][] bagOfVisualWords;
+        int numberOfClusters = 500;
+        CodeBook codeBook;
+
+        int limit = 25; // pick number 'limit' images from each category.
+
+        bagOfVisualWords = Utilities.getBOVWFromTrainingImageDescriptors(trainingImagesDataset,limit);
+        codeBook = new CodeBook(bagOfVisualWords,numberOfClusters);
+
+        double[] visualWord = codeBook.getRepresentativeVector(bagOfVisualWords[0]);
     }
 }

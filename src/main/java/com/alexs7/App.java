@@ -21,7 +21,10 @@ public class App {
         VFSGroupDataset<FImage> trainingImagesDataset = trainingImageLoader.getGroupDataSet();
         Map<String,FImage> testingImagesDataset = testingImageLoader.getMapDataSet();
 
-        Runner.runKNNClassifier(trainingImagesDataset,testingImagesDataset);
+//        Run #1
+//        Runner.runKNNClassifier(trainingImagesDataset,testingImagesDataset);
+//        Run #2
+        Runner.runLinearClassifiers(trainingImagesDataset,testingImagesDataset);
 
     }
 
