@@ -29,8 +29,20 @@ public class CodeBook {
         this.representantiveVectors = centroidsResults.getCentroids();
     }
 
-    public double[] getRepresentativeVector(double[] descriptor) {
+    public double[] getRepresentativeVectorFromDescriptor(double[] descriptor) {
         int index = assigner.assign(descriptor);
         return representantiveVectors[index];
+    }
+
+    public int getRepresentativeVectorIndexFromDescriptor(double[] descriptor) {
+        return assigner.assign(descriptor);
+    }
+
+    public double[][] getRepresentantiveVectors() {
+        return representantiveVectors;
+    }
+
+    public int size() {
+        return representantiveVectors.length;
     }
 }

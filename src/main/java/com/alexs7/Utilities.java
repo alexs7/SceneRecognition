@@ -104,4 +104,19 @@ public class Utilities {
 
         return bagOfVisualWordsDoubleArray;
     }
+
+
+    public static int[] getFixedLengthVectorWordOccurences(CodeBook codebook, FImage input) {
+        ArrayList<double[]> imageDescriptors = Utilities.getImageDescriptors(input);
+        double[][] representantiveVectors = codebook.getRepresentantiveVectors();
+        int[] fixedLengthVector = new int[codebook.size()];
+        int representativeVectorIndex;
+
+        for (double[] imageDescriptor : imageDescriptors){
+            representativeVectorIndex = codebook.getRepresentativeVectorIndexFromDescriptor(imageDescriptor);
+            fixedLengthVector[representativeVectorIndex] +=1;
+        }
+
+        return fixedLengthVector;
+    }
 }

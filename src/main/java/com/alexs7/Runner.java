@@ -4,8 +4,6 @@ import org.openimaj.data.dataset.VFSGroupDataset;
 import org.openimaj.image.FImage;
 import org.openimaj.image.processing.resize.ResizeProcessor;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -46,6 +44,7 @@ public class Runner {
         bagOfVisualWords = Utilities.getBOVWFromTrainingImageDescriptors(trainingImagesDataset,limit);
         codeBook = new CodeBook(bagOfVisualWords,numberOfClusters);
 
-        double[] visualWord = codeBook.getRepresentativeVector(bagOfVisualWords[0]);
+        double[] visualWord = codeBook.getRepresentativeVectorFromDescriptor(bagOfVisualWords[0]);
+        Utilities.getFixedLengthVectorWordOccurences(codeBook, trainingImagesDataset.get("bedroom").get(0));
     }
 }
