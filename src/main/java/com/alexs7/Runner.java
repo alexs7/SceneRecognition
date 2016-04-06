@@ -1,9 +1,17 @@
 package com.alexs7;
 
+import de.bwaldvogel.liblinear.SolverType;
+import org.openimaj.data.dataset.GroupedDataset;
+import org.openimaj.data.dataset.ListDataset;
 import org.openimaj.data.dataset.VFSGroupDataset;
+import org.openimaj.feature.DoubleFV;
+import org.openimaj.feature.FeatureExtractor;
 import org.openimaj.image.FImage;
 import org.openimaj.image.processing.resize.ResizeProcessor;
+import org.openimaj.ml.annotation.Annotated;
+import org.openimaj.ml.annotation.linear.LiblinearAnnotator;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -38,13 +46,16 @@ public class Runner {
         double[][] bagOfVisualWords;
         int numberOfClusters = 500;
         CodeBook codeBook;
-
         int limit = 25; // pick number 'limit' images from each category.
 
         bagOfVisualWords = Utilities.getBOVWFromTrainingImageDescriptors(trainingImagesDataset,limit);
         codeBook = new CodeBook(bagOfVisualWords,numberOfClusters);
 
-        double[] visualWord = codeBook.getRepresentativeVectorFromDescriptor(bagOfVisualWords[0]);
-        Utilities.getFixedLengthVectorWordOccurences(codeBook, trainingImagesDataset.get("bedroom").get(0));
+        FeatureExtractor<DoubleFV, FImage> extractor = new DescriptorExtractor(codeBook);
+
+        LiblinearAnnotator<FImage, String> ann = new LiblinearAnnotator<FImage, String>(
+                extractor, LiblinearAnnotator.Mode.MULTICLASS, SolverType.L2R_L2LOSS_SVC, 1.0, 0.00001);
+
+        ann.train((GroupedDataset<String, ListDataset<FImage>, FImage>) trainingImagesDataset.getRandomInstance());
     }
 }

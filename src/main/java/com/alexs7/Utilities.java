@@ -2,6 +2,7 @@ package com.alexs7;
 
 import org.openimaj.data.dataset.VFSGroupDataset;
 import org.openimaj.data.dataset.VFSListDataset;
+import org.openimaj.feature.DoubleFV;
 import org.openimaj.image.FImage;
 
 import java.util.ArrayList;
@@ -105,11 +106,9 @@ public class Utilities {
         return bagOfVisualWordsDoubleArray;
     }
 
-
-    public static int[] getFixedLengthVectorWordOccurences(CodeBook codebook, FImage input) {
+    public static DoubleFV getFixedLengthVectorWordOccurences(CodeBook codebook, FImage input) {
         ArrayList<double[]> imageDescriptors = Utilities.getImageDescriptors(input);
-        double[][] representantiveVectors = codebook.getRepresentantiveVectors();
-        int[] fixedLengthVector = new int[codebook.size()];
+        double[] fixedLengthVector = new double[codebook.size()];
         int representativeVectorIndex;
 
         for (double[] imageDescriptor : imageDescriptors){
@@ -117,6 +116,6 @@ public class Utilities {
             fixedLengthVector[representativeVectorIndex] +=1;
         }
 
-        return fixedLengthVector;
+        return new DoubleFV(fixedLengthVector);
     }
 }

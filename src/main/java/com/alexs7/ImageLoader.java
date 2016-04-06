@@ -22,8 +22,7 @@ public class ImageLoader {
     }
 
     public VFSGroupDataset<FImage> getGroupDataSet() {
-        VFSGroupDataset<FImage> images =
-                null;
+        VFSGroupDataset<FImage> images = null;
         try {
             images = new VFSGroupDataset<>(dir, ImageUtilities.FIMAGE_READER);
         } catch (FileSystemException e) {
