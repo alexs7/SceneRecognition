@@ -56,6 +56,8 @@ public class Runner {
         LiblinearAnnotator<FImage, String> ann = new LiblinearAnnotator<FImage, String>(
                 extractor, LiblinearAnnotator.Mode.MULTICLASS, SolverType.L2R_L2LOSS_SVC, 1.0, 0.00001);
 
-        ann.train((GroupedDataset<String, ListDataset<FImage>, FImage>) trainingImagesDataset.getRandomInstance());
+        ann.train(trainingImagesDataset);
+
+        System.out.println("done!");
     }
 }
