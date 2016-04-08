@@ -15,8 +15,8 @@ public class App {
 
     public static void main(String[] args) throws IOException {
 
-        ImageLoader trainingImageLoader = new ImageLoader("/Users/alex/Projects/University Notes/COMP6223 Computer Vision/CW3/SceneRecognition/training");
-        ImageLoader testingImageLoader = new ImageLoader("/Users/alex/Projects/University Notes/COMP6223 Computer Vision/CW3/SceneRecognition/testing");
+        ImageLoader trainingImageLoader = new ImageLoader("/home/ar1v13/Projects/UniWork/SceneRecognition/training");
+        ImageLoader testingImageLoader = new ImageLoader("/home/ar1v13/Projects/UniWork/SceneRecognition/testing");
 
         VFSGroupDataset<FImage> trainingImagesDataset = trainingImageLoader.getGroupDataSet();
         Map<String,FImage> testingImagesDataset = testingImageLoader.getMapDataSet();
