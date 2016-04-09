@@ -64,6 +64,31 @@ public class Utilities {
         return vector;
     }
 
+    public static double[][] getBOVFFromTrainingImageDescriptors(VFSGroupDataset<FImage> trainingImagesDataset, int limit) {
+        ArrayList<double[]> imageDescriptors;
+        ArrayList<double[]> bagOfVisualFeaturesOfTrainingSet = new ArrayList<>();
+        int bagOfVWHeight = 0;
+        int bagOfVWWidth = 0;
+
+        for (Map.Entry<String, VFSListDataset<FImage>> mapEntry : trainingImagesDataset.entrySet() ) {
+            for (FImage trainingImage : mapEntry.getValue().subList(0,limit)){
+
+                imageDescriptors = getImageDescriptors(trainingImage);
+                for (int i = 0; i < imageDescriptors.size(); i++) {
+                    bagOfVisualFeaturesOfTrainingSet.add(imageDescriptors.get(i));
+                }
+            }
+        }
+
+        double[][] bagOfVisualFeaturesDoubleArray = new double[bagOfVisualFeaturesOfTrainingSet.size()][bagOfVisualFeaturesOfTrainingSet.get(0).length]; // width will be always 64
+
+        for (int i = 0; i < bagOfVisualFeaturesOfTrainingSet.size(); i++) {
+            bagOfVisualFeaturesDoubleArray[i] = bagOfVisualFeaturesOfTrainingSet.get(i);
+        }
+
+        return bagOfVisualFeaturesDoubleArray;
+    }
+
     public static ArrayList<double[]> getImageDescriptors(FImage image) { //using the patches from the coursework instructions
         ArrayList<double[]> imageDescriptors = new ArrayList<>();
         int imageWidth = image.getWidth();
@@ -79,43 +104,5 @@ public class Utilities {
             }
         }
         return imageDescriptors;
-    }
-
-    public static double[][] getBOVWFromTrainingImageDescriptors(VFSGroupDataset<FImage> trainingImagesDataset, int limit) {
-        ArrayList<double[]> imageDescriptors;
-        ArrayList<double[]> bagOfVisualWords = new ArrayList<>();
-        int bagOfVWHeight = 0;
-        int bagOfVWWidth = 0;
-
-        for (Map.Entry<String, VFSListDataset<FImage>> mapEntry : trainingImagesDataset.entrySet() ) {
-            for (FImage trainingImage : mapEntry.getValue().subList(0,limit)){
-
-                imageDescriptors = getImageDescriptors(trainingImage);
-                for (int i = 0; i < imageDescriptors.size(); i++) {
-                    bagOfVisualWords.add(imageDescriptors.get(i));
-                }
-            }
-        }
-
-        double[][] bagOfVisualWordsDoubleArray = new double[bagOfVisualWords.size()][bagOfVisualWords.get(0).length]; // width will be always 64
-
-        for (int i = 0; i < bagOfVisualWords.size(); i++) {
-            bagOfVisualWordsDoubleArray[i] = bagOfVisualWords.get(i);
-        }
-
-        return bagOfVisualWordsDoubleArray;
-    }
-
-    public static DoubleFV getFixedLengthVectorWordOccurences(CodeBook codebook, FImage input) {
-        ArrayList<double[]> imageDescriptors = Utilities.getImageDescriptors(input);
-        double[] fixedLengthVector = new double[codebook.size()];
-        int representativeVectorIndex;
-
-        for (double[] imageDescriptor : imageDescriptors){
-            representativeVectorIndex = codebook.getRepresentativeVectorIndexFromDescriptor(imageDescriptor);
-            fixedLengthVector[representativeVectorIndex] +=1;
-        }
-
-        return new DoubleFV(fixedLengthVector);
     }
 }

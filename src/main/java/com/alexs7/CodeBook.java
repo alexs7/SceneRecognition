@@ -13,14 +13,10 @@ import java.util.List;
  */
 public class CodeBook {
 
-    private int clusters;
-    private double[][] bagOfVisualWords;
     private HardAssigner<double[],?,?> assigner;
     double[][] representantiveVectors;
 
     public CodeBook(double[][] bagOfVisualWords, int clusters) {
-        this.clusters = clusters;
-        this.bagOfVisualWords = bagOfVisualWords;
 
         DoubleKMeans doubleKMeans = DoubleKMeans.createExact(clusters);
         DoubleCentroidsResult centroidsResults = doubleKMeans.cluster(bagOfVisualWords);
