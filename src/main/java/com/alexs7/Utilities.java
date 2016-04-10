@@ -2,10 +2,14 @@ package com.alexs7;
 
 import org.openimaj.data.dataset.VFSGroupDataset;
 import org.openimaj.data.dataset.VFSListDataset;
-import org.openimaj.feature.DoubleFV;
+import org.openimaj.feature.local.list.LocalFeatureList;
 import org.openimaj.image.FImage;
+import org.openimaj.image.feature.dense.gradient.dsift.DenseSIFT;
+import org.openimaj.image.feature.dense.gradient.dsift.FloatDSIFTKeypoint;
+import org.openimaj.image.feature.dense.gradient.dsift.PyramidDenseSIFT;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -67,8 +71,6 @@ public class Utilities {
     public static double[][] getBOVFFromTrainingImageDescriptors(VFSGroupDataset<FImage> trainingImagesDataset, int limit) {
         ArrayList<double[]> imageDescriptors;
         ArrayList<double[]> bagOfVisualFeaturesOfTrainingSet = new ArrayList<>();
-        int bagOfVWHeight = 0;
-        int bagOfVWWidth = 0;
 
         for (Map.Entry<String, VFSListDataset<FImage>> mapEntry : trainingImagesDataset.entrySet() ) {
             for (FImage trainingImage : mapEntry.getValue().subList(0,limit)){
@@ -105,4 +107,21 @@ public class Utilities {
         }
         return imageDescriptors;
     }
+
+    public static List<LocalFeatureList<FloatDSIFTKeypoint>> getBOVFFromDenseSIFT(VFSGroupDataset<FImage> trainingImagesDataset, int limit) {
+        DenseSIFT dsift = new DenseSIFT(5, 7);
+        PyramidDenseSIFT<FImage> pdsift = new PyramidDenseSIFT<FImage>(dsift, 6f, 7);
+        List<LocalFeatureList<FloatDSIFTKeypoint>> bagOfVisualFeaturesOfTrainingSet = new ArrayList<LocalFeatureList<FloatDSIFTKeypoint>>();
+
+        for (Map.Entry<String, VFSListDataset<FImage>> mapEntry : trainingImagesDataset.entrySet() ) {
+            for (FImage trainingImage : mapEntry.getValue().subList(0,limit)){
+
+                pdsift.analyseImage(trainingImage);
+                bagOfVisualFeaturesOfTrainingSet.add(pdsift.getFloatKeypoints(0.005f));
+
+            }
+        }
+        return bagOfVisualFeaturesOfTrainingSet;
+    }
+
 }

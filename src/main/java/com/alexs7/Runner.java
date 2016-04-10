@@ -5,10 +5,13 @@ import org.openimaj.data.dataset.VFSGroupDataset;
 import org.openimaj.experiment.evaluation.classification.ClassificationResult;
 import org.openimaj.feature.DoubleFV;
 import org.openimaj.feature.FeatureExtractor;
+import org.openimaj.feature.local.list.LocalFeatureList;
 import org.openimaj.image.FImage;
+import org.openimaj.image.feature.dense.gradient.dsift.FloatDSIFTKeypoint;
 import org.openimaj.image.processing.resize.ResizeProcessor;
 import org.openimaj.ml.annotation.linear.LiblinearAnnotator;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -65,6 +68,11 @@ public class Runner {
     }
 
     public static void runBestClassifier(VFSGroupDataset<FImage> trainingImagesDataset, Map<String, FImage> testingImagesDataset) {
+
+        List<LocalFeatureList<FloatDSIFTKeypoint>> bagOfVisualFeatures;
+        int limit = 25; // pick number 'limit' images from each category.
+
+        bagOfVisualFeatures = Utilities.getBOVFFromDenseSIFT(trainingImagesDataset, limit);
 
     }
 }
