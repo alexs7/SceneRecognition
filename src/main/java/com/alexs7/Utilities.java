@@ -108,9 +108,11 @@ public class Utilities {
         return imageDescriptors;
     }
 
-    public static List<LocalFeatureList<FloatDSIFTKeypoint>> getBOVFFromDenseSIFT(VFSGroupDataset<FImage> trainingImagesDataset, int limit) {
-        DenseSIFT dsift = new DenseSIFT(5, 7);
-        PyramidDenseSIFT<FImage> pdsift = new PyramidDenseSIFT<FImage>(dsift, 6f, 7);
+    public static List<LocalFeatureList<FloatDSIFTKeypoint>> getBOVFFromDenseSIFT(VFSGroupDataset<FImage> trainingImagesDataset,
+                                                                                  int limit,
+                                                                                  DenseSIFT dsift,
+                                                                                  PyramidDenseSIFT<FImage> pdsift) {
+
         List<LocalFeatureList<FloatDSIFTKeypoint>> bagOfVisualFeaturesOfTrainingSet = new ArrayList<LocalFeatureList<FloatDSIFTKeypoint>>();
 
         for (Map.Entry<String, VFSListDataset<FImage>> mapEntry : trainingImagesDataset.entrySet() ) {
@@ -124,4 +126,8 @@ public class Utilities {
         return bagOfVisualFeaturesOfTrainingSet;
     }
 
+    public static float[][] getDenseSIFT(FImage image, PyramidDenseSIFT<FImage> pdsift) {
+        pdsift.analyseImage(image);
+        return pdsift.getDescriptors();
+    }
 }

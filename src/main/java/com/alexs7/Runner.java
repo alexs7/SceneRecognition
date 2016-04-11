@@ -7,7 +7,9 @@ import org.openimaj.feature.DoubleFV;
 import org.openimaj.feature.FeatureExtractor;
 import org.openimaj.feature.local.list.LocalFeatureList;
 import org.openimaj.image.FImage;
+import org.openimaj.image.feature.dense.gradient.dsift.DenseSIFT;
 import org.openimaj.image.feature.dense.gradient.dsift.FloatDSIFTKeypoint;
+import org.openimaj.image.feature.dense.gradient.dsift.PyramidDenseSIFT;
 import org.openimaj.image.processing.resize.ResizeProcessor;
 import org.openimaj.ml.annotation.linear.LiblinearAnnotator;
 
@@ -45,13 +47,13 @@ public class Runner {
 
         double[][] bagOfVisualFeatures;
         int numberOfClusters = 500;
-        CodeBook codeBook;
+        PatchesCodeBook codeBook;
         int limit = 25; // pick number 'limit' images from each category.
         ResultFileWriter resultFileWriter = new ResultFileWriter("run2.txt");
         ClassificationResult<String> result = null;
 
         bagOfVisualFeatures = Utilities.getBOVFFromTrainingImageDescriptors(trainingImagesDataset,limit);
-        codeBook = new CodeBook(bagOfVisualFeatures,numberOfClusters);
+        codeBook = new PatchesCodeBook(bagOfVisualFeatures,numberOfClusters);
 
         FeatureExtractor<DoubleFV, FImage> extractor = new DescriptorExtractor(codeBook);
 
@@ -70,9 +72,28 @@ public class Runner {
     public static void runBestClassifier(VFSGroupDataset<FImage> trainingImagesDataset, Map<String, FImage> testingImagesDataset) {
 
         List<LocalFeatureList<FloatDSIFTKeypoint>> bagOfVisualFeatures;
+        int numberOfClusters = 500;
         int limit = 25; // pick number 'limit' images from each category.
+        SIFTCodebook codeBook;
+        DenseSIFT dsift = new DenseSIFT(5, 7);
+        PyramidDenseSIFT<FImage> pdsift = new PyramidDenseSIFT<FImage>(dsift, 6f, 7);
+        ResultFileWriter resultFileWriter = new ResultFileWriter("run3.txt");
+        ClassificationResult<String> result = null;
 
-        bagOfVisualFeatures = Utilities.getBOVFFromDenseSIFT(trainingImagesDataset, limit);
+        bagOfVisualFeatures = Utilities.getBOVFFromDenseSIFT(trainingImagesDataset, limit, dsift, pdsift);
+        codeBook = new SIFTCodebook(bagOfVisualFeatures,numberOfClusters);
 
+        FeatureExtractor<DoubleFV, FImage> extractor = new PHOWExtractor(codeBook,pdsift);
+
+        LiblinearAnnotator<FImage, String> ann = new LiblinearAnnotator<FImage, String>(
+                extractor, LiblinearAnnotator.Mode.MULTICLASS, SolverType.L2R_L2LOSS_SVC, 1.0, 0.00001);
+
+        ann.train(trainingImagesDataset);
+
+        for (Map.Entry<String, FImage> testImageEntry : testingImagesDataset.entrySet() ) {
+            result = ann.classify(testImageEntry.getValue());
+            result.getPredictedClasses().iterator().next();
+            resultFileWriter.writeResultToFile(testImageEntry.getKey(),result.getPredictedClasses().iterator().next().toLowerCase());
+        }
     }
 }

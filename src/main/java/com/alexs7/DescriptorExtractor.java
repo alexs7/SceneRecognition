@@ -11,9 +11,9 @@ import java.util.ArrayList;
  */
 public class DescriptorExtractor implements FeatureExtractor<DoubleFV, FImage> {
 
-    private CodeBook codeBook;
+    private PatchesCodeBook codeBook;
 
-    public DescriptorExtractor(CodeBook codeBook) {
+    public DescriptorExtractor(PatchesCodeBook codeBook) {
         this.codeBook = codeBook;
     }
 
