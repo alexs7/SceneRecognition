@@ -119,7 +119,7 @@ public class Utilities {
             for (FImage trainingImage : mapEntry.getValue().subList(0,limit)){
 
                 pdsift.analyseImage(trainingImage);
-                bagOfVisualFeaturesOfTrainingSet.add(pdsift.getFloatKeypoints(0.005f));
+                bagOfVisualFeaturesOfTrainingSet.add(pdsift.getFloatKeypoints());
 
             }
         }
