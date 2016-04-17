@@ -16,11 +16,11 @@ import java.util.List;
  */
 public class SIFTCodebook {
 
-    private final float[][] representantiveVectors;
+    private float[][] representantiveVectors;
     private HardAssigner<float[], float[], IntFloatPair> assigner;
 
     public SIFTCodebook(List<LocalFeatureList<FloatDSIFTKeypoint>> bagOfVisualFeatures, int numberOfClusters) {
-        FloatKMeans floatKMeans = FloatKMeans.createExact(numberOfClusters);
+        FloatKMeans floatKMeans = FloatKMeans.createKDTreeEnsemble(numberOfClusters);
         DataSource<float[]> datasource = new LocalFeatureListDataSource<FloatDSIFTKeypoint, float[]>(bagOfVisualFeatures);
         FloatCentroidsResult centroidsResults = floatKMeans.cluster(datasource);
 
@@ -34,5 +34,9 @@ public class SIFTCodebook {
 
     public int size() {
         return representantiveVectors.length;
+    }
+
+    public HardAssigner<float[], float[], IntFloatPair> getAssigner() {
+        return assigner;
     }
 }
