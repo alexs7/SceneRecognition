@@ -57,8 +57,10 @@ public class Runner {
 
         FeatureExtractor<DoubleFV, FImage> extractor = new DescriptorExtractor(codeBook);
 
+        //The classifier mode; either multiclass or multilabel. Multiclass mode will use liblinear's internal multiclass support,
+        // whereas multilabel mode will create a set of one-versus-all (OvA) classifiers for each class.
         LiblinearAnnotator<FImage, String> ann = new LiblinearAnnotator<FImage, String>(
-                extractor, LiblinearAnnotator.Mode.MULTICLASS, SolverType.L2R_L2LOSS_SVC, 1.0, 0.00001);
+                extractor, LiblinearAnnotator.Mode.MULTILABEL, SolverType.L2R_L2LOSS_SVC, 1.0, 0.00001);
 
         ann.train(trainingImagesDataset);
 
