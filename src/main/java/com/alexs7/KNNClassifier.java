@@ -37,7 +37,7 @@ public class KNNClassifier {
 
                 trainingImageFeatureVector = Utilities.getFeaturesVector(trainingImage);
                 trainingImageFeatureVector = Utilities.zeroMean(trainingImageFeatureVector);
-                trainingImageFeatureVector = Utilities.unitLength(trainingImageFeatureVector);
+                trainingImageFeatureVector = Utilities.normaliseVector(trainingImageFeatureVector);
 
                 distance = getDistance(testImageFeatureVector,trainingImageFeatureVector);
                 results.add(new Result(category,distance));

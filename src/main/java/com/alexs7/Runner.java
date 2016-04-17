@@ -35,7 +35,7 @@ public class Runner {
 
             imageFeatureVector = Utilities.getFeaturesVector(tinyImage);
             imageFeatureVector = Utilities.zeroMean(imageFeatureVector);
-            imageFeatureVector = Utilities.unitLength(imageFeatureVector);
+            imageFeatureVector = Utilities.normaliseVector(imageFeatureVector);
 
             category = knnClassifier.classify(imageFeatureVector);
             imageName = testImageEntry.getKey();

@@ -51,7 +51,7 @@ public class Utilities {
         return image.getDoublePixelVector();
     }
 
-    public static double[] unitLength(double[] vector) {
+    public static double[] normaliseVector(double[] vector) {
         double magnitude = 0;
         double sum = 0;
 
