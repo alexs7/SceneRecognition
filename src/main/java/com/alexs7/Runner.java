@@ -12,6 +12,8 @@ import org.openimaj.image.feature.dense.gradient.dsift.FloatDSIFTKeypoint;
 import org.openimaj.image.feature.dense.gradient.dsift.PyramidDenseSIFT;
 import org.openimaj.image.processing.resize.ResizeProcessor;
 import org.openimaj.ml.annotation.linear.LiblinearAnnotator;
+import org.openimaj.ml.annotation.linear.LinearSVMAnnotator;
+import org.openimaj.ml.kernel.HomogeneousKernelMap;
 
 import java.util.List;
 import java.util.Map;
@@ -74,7 +76,7 @@ public class Runner {
     public static void runBestClassifier(VFSGroupDataset<FImage> trainingImagesDataset, Map<String, FImage> testingImagesDataset) {
 
         List<LocalFeatureList<FloatDSIFTKeypoint>> bagOfVisualFeatures;
-        int numberOfClusters = 500;
+        int numberOfClusters = 300;
         int limit = 25; // pick number 'limit' images from each category.
         SIFTCodebook codeBook;
         DenseSIFT dsift = new DenseSIFT(5, 7);
@@ -85,17 +87,21 @@ public class Runner {
         bagOfVisualFeatures = Utilities.getBOVFFromDenseSIFT(trainingImagesDataset, limit, dsift, pdsift);
         codeBook = new SIFTCodebook(bagOfVisualFeatures,numberOfClusters);
 
+        HomogeneousKernelMap homogeneousKernelMap = new HomogeneousKernelMap(HomogeneousKernelMap.KernelType.Chi2, 1.0,  HomogeneousKernelMap.WindowType.Rectangular);
         FeatureExtractor<DoubleFV, FImage> extractor = new PHOWExtractor(codeBook,pdsift);
+        FeatureExtractor<DoubleFV, FImage> homogeneousKernelMapWrappedExtractor = homogeneousKernelMap.createWrappedExtractor(extractor);
 
-        LiblinearAnnotator<FImage, String> ann = new LiblinearAnnotator<FImage, String>(
-                extractor, LiblinearAnnotator.Mode.MULTICLASS, SolverType.L2R_L2LOSS_SVC, 1.0, 0.00001);
+        LinearSVMAnnotator<FImage, String> ann = new LinearSVMAnnotator<FImage, String>(homogeneousKernelMapWrappedExtractor);
 
         ann.train(trainingImagesDataset);
 
         for (Map.Entry<String, FImage> testImageEntry : testingImagesDataset.entrySet() ) {
             result = ann.classify(testImageEntry.getValue());
-            result.getPredictedClasses().iterator().next();
-            resultFileWriter.writeResultToFile(testImageEntry.getKey(),result.getPredictedClasses().iterator().next().toLowerCase());
+            if(!result.getPredictedClasses().isEmpty()){
+                resultFileWriter.writeResultToFile(testImageEntry.getKey(),result.getPredictedClasses().iterator().next().toLowerCase());
+            }else{
+                resultFileWriter.writeResultToFile(testImageEntry.getKey(),"failed to classify");
+            }
         }
     }
 }
