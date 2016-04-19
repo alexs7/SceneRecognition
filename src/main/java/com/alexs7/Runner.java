@@ -11,6 +11,7 @@ import org.openimaj.image.feature.dense.gradient.dsift.DenseSIFT;
 import org.openimaj.image.feature.dense.gradient.dsift.FloatDSIFTKeypoint;
 import org.openimaj.image.feature.dense.gradient.dsift.PyramidDenseSIFT;
 import org.openimaj.image.processing.resize.ResizeProcessor;
+import org.openimaj.ml.annotation.bayes.NaiveBayesAnnotator;
 import org.openimaj.ml.annotation.linear.LiblinearAnnotator;
 import org.openimaj.ml.annotation.linear.LinearSVMAnnotator;
 import org.openimaj.ml.kernel.HomogeneousKernelMap;
@@ -91,7 +92,8 @@ public class Runner {
         FeatureExtractor<DoubleFV, FImage> extractor = new PHOWExtractor(codeBook,pdsift);
         FeatureExtractor<DoubleFV, FImage> homogeneousKernelMapWrappedExtractor = homogeneousKernelMap.createWrappedExtractor(extractor);
 
-        LinearSVMAnnotator<FImage, String> ann = new LinearSVMAnnotator<FImage, String>(homogeneousKernelMapWrappedExtractor);
+        //LinearSVMAnnotator<FImage, String> ann = new LinearSVMAnnotator<FImage, String>(homogeneousKernelMapWrappedExtractor);
+        NaiveBayesAnnotator<FImage, String> ann = new NaiveBayesAnnotator<FImage, String>(homogeneousKernelMapWrappedExtractor, NaiveBayesAnnotator.Mode.MAXIMUM_LIKELIHOOD);
 
         ann.train(trainingImagesDataset);
 
